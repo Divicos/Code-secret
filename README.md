@@ -19,9 +19,23 @@ Le code secret comporte quatre couleurs choisies parmi rouge, bleu, vert, jaune,
 
 ## Tests attendus / obtenus
 
-Les cas T01–T09 du contrat attendent, dans l’ordre, **bien placées / mal placées** : `1/2`, `0/2`, `0/4`, `2/2`, `4/0`, `2/0`, `2/2`, `4/0`, `1/2`. Un essai exact doit gagner ; les autres cas restent en cours.
+| Description du test | Résultat attendu | Résultat obtenu |
+| --- | --- | --- |
+| T01 — code distinct, couleurs permutées et une couleur absente | 1 bien placée, 2 mal placées ; partie en cours | Conforme : 1/2 ; partie en cours |
+| T02 — proposition contenant deux couleurs absentes | 0 bien placée, 2 mal placées ; partie en cours | Conforme : 0/2 ; partie en cours |
+| T03 — les quatre couleurs présentes, toutes permutées | 0 bien placée, 4 mal placées ; partie en cours | Conforme : 0/4 ; partie en cours |
+| T04 — deux positions exactes, deux couleurs permutées | 2 bien placées, 2 mal placées ; partie en cours | Conforme : 2/2 ; partie en cours |
+| T05 — proposition identique au code | 4 bien placées, 0 mal placée ; victoire | Conforme : 4/0 ; victoire |
+| T06 — code répété `rouge-rouge-bleu-vert`, proposition `rouge-rouge-rouge-rouge` | 2 bien placées, 0 mal placée ; doublons comptés une seule fois | Conforme : 2/0 |
+| T07 — code répété avec deux couleurs déplacées | 2 bien placées, 2 mal placées ; partie en cours | Conforme : 2/2 ; partie en cours |
+| T08 — proposition identique à un code répété | 4 bien placées, 0 mal placée ; victoire | Conforme : 4/0 ; victoire |
+| T09 — couleurs répétées et occurrences excédentaires | 1 bien placée, 2 mal placées ; partie en cours | Conforme : 1/2 ; partie en cours |
+| Refus de proposition : type invalide, longueur invalide, puis couleur invalide | Codes `invalid-type`, `invalid-length`, `invalid-color` dans cet ordre ; aucun essai consommé | Conforme ; `lastError` décrit le dernier refus |
+| Refus de démarrage : options ou code secret mal formés | Rejet avec le code d’erreur approprié ; état précédent inchangé | Conforme pour options, type, longueur et couleur |
+| Cycle de vie : victoire au 10e essai, défaite au 10e, appel après la fin, redémarrage | Statuts `won`/`lost`, refus `game-finished`, puis nouvel état `playing` vide | Conforme ; essais et historique vérifiés |
+| Séparation `?test=1` et `?debug=1` | API commune exposée uniquement par `?test=1` ; banc d’essai masqué en mode commun | Conforme ; l’état API ne contient pas le secret |
 
-**Obtenu :** `node tests.cjs` passe. Le script vérifie les neuf cas, les priorités d’erreur, l’absence de fuite du secret dans l’état, la victoire au dixième essai, la défaite, le redémarrage et la séparation des paramètres `?test=1` et `?debug=1`. `tests.html` fournit aussi une page de vérification dans un navigateur ; son rendu et ses interactions ne sont pas validés ici.
+**Vérification obtenue :** toutes ces assertions passent avec `node tests.cjs`. `tests.html` fournit aussi une page navigateur ; son rendu et ses interactions n’ont pas été validés ici.
 
 ## Limites
 

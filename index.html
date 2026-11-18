@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f1e8">
+    <meta name="description" content="Un jeu de déduction solo : trouvez le code secret de quatre couleurs en dix essais.">
+    <title>Code secret — le jeu des couleurs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Code secret, accueil">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>atelier <strong>des couleurs</strong></span>
+        </a>
+        <span class="edition"><span class="edition-dot"></span> ÉDITION 01 <span class="edition-divider">/</span> SOLO</span>
+      </header>
+
+      <main id="app" class="layout" aria-live="polite"></main>
+
+      <footer class="footer">
+        <span>Un jeu de logique, un indice à la fois.</span>
+        <span>CODE SECRET <span class="footer-version">· v1.0</span></span>
+      </footer>
+    </div>
+  </body>
+</html>

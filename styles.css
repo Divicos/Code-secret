@@ -99,6 +99,21 @@ h1 { margin-bottom: 15px; font-family: "Space Grotesk", sans-serif; font-size: c
 .game-message.lost { background: #f7ece8; color: #994d40; }
 .game-message.error { background: #f7ece8; color: #994d40; }
 .game-message[hidden] { display: none; }
+.test-tools { margin-bottom: 16px; border: 1px dashed #bdc8b8; border-radius: 8px; padding: 13px 14px; background: #f3f5ef; }
+.test-tools-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.test-tools-heading .eyebrow { margin: 0; font-size: 9px; }
+.test-mode-badge { border-radius: 99px; padding: 4px 7px; background: #e2e9df; color: var(--green-dark); font-family: "DM Mono", monospace; font-size: 8px; letter-spacing: .08em; }
+.test-tools h3 { margin: 0 0 4px; font-family: "Space Grotesk", sans-serif; font-size: 13px; font-weight: 600; }
+.test-tools-copy { margin: 0 0 10px; color: #73776d; font-size: 10px; line-height: 1.5; }
+.test-tools-copy code { border-radius: 3px; padding: 1px 4px; background: #e8ebe3; color: #3d5542; font-family: "DM Mono", monospace; }
+.test-secret-form .slots { gap: 6px; }
+.test-secret-form .slot select { height: 34px; }
+.test-action-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
+.test-action-row .secondary-button { min-height: 34px; padding: 0 10px; font-size: 10px; }
+.test-reveal-button { min-height: 30px; border: 0; background: transparent; color: var(--green-dark); cursor: pointer; font-size: 10px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.test-reveal-button:disabled { color: #a4a69c; cursor: not-allowed; }
+.test-secret-reveal { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; border-top: 1px solid #dfe5da; padding-top: 10px; }
+.test-secret-caption { color: #73776d; font-family: "DM Mono", monospace; font-size: 9px; letter-spacing: .06em; }
 
 .rules-card { margin-top: 16px; padding: 21px 23px 19px; box-shadow: none; }
 .rules-card h2 { margin-bottom: 16px; }

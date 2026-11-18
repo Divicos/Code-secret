@@ -17,6 +17,8 @@
 
   let state = makeState();
   let secret = null;
+  let showTestSecret = false;
+  const debugMode = new URLSearchParams(window.location.search).get("debug") === "1";
 
   function failure(code, message) {
     const error = new Error(message);
@@ -89,6 +91,7 @@
       secret = nextSecret;
       state = makeState();
       state.status = "playing";
+      showTestSecret = false;
       render();
       return getState();
     });
@@ -191,6 +194,22 @@
     return `<p class="game-message" role="status" hidden></p>`;
   }
 
+  function renderTestTools() {
+    if (!debugMode) return "";
+    const options = COLORS.map((color) => `<option value="${color}">${COLOR_LABELS[color]}</option>`).join("");
+    return `<section class="test-tools" aria-labelledby="test-tools-title">
+      <div class="test-tools-heading"><span class="eyebrow">Mode isolé</span><span class="test-mode-badge">BANC D’ESSAI</span></div>
+      <h3 id="test-tools-title">Préparer une partie de test</h3>
+      <p class="test-tools-copy">Choisissez un code fixe pour rejouer le même scénario. Cette zone n’apparaît qu’avec <code>?debug=1</code>.</p>
+      <form class="test-secret-form" data-test-secret-form>
+        <div class="slots">${[0, 1, 2, 3].map((index) => `<div class="slot"><label class="slot-label" for="test-slot-${index + 1}">PLACE ${index + 1}</label><select id="test-slot-${index + 1}" aria-label="Couleur de test en position ${index + 1}">${options}</select></div>`).join("")}</div>
+        <div class="test-action-row"><button class="secondary-button" type="submit">Démarrer avec ce code</button>
+          <button class="test-reveal-button" type="button" data-action="toggle-secret" ${secret ? "" : "disabled"}>${showTestSecret ? "Masquer le code" : "Voir le code secret"}</button></div>
+      </form>
+      ${showTestSecret && secret ? `<div class="test-secret-reveal" role="status"><span class="test-secret-caption">CODE DE CETTE PARTIE</span><span class="guess-pegs" aria-label="${secret.map((color) => COLOR_LABELS[color]).join(", ")}">${secret.map((color) => peg(color, false)).join("")}</span></div>` : ""}
+    </section>`;
+  }
+
   function renderComposer() {
     if (state.status === "not-started") {
       return `<div class="composer"><p class="composer-label">Prêt·e à jouer ?</p><div class="action-row"><span class="form-error">Le code secret est choisi au hasard.</span><button class="primary-button" type="button" data-action="start">Commencer une partie <span aria-hidden="true">→</span></button></div></div>`;
@@ -221,6 +240,7 @@
         </div>
         <section class="game-card" aria-labelledby="game-title">
           <div class="card-heading"><h2 id="game-title">Votre partie</h2><span class="attempt-badge">ESSAIS RESTANTS <strong>${attemptsLeft}</strong></span></div>
+          ${renderTestTools()}
           ${renderMessage()}
           ${renderHistory()}
           ${renderComposer()}
@@ -243,12 +263,22 @@
   }
 
   app.addEventListener("click", async (event) => {
-    const button = event.target.closest("[data-action='start']");
+    const button = event.target.closest("[data-action]");
     if (!button) return;
-    await startGame();
+    if (button.dataset.action === "start") await startGame();
+    if (button.dataset.action === "toggle-secret" && secret) {
+      showTestSecret = !showTestSecret;
+      render();
+    }
   });
 
   app.addEventListener("submit", async (event) => {
+    if (event.target.matches("[data-test-secret-form]")) {
+      event.preventDefault();
+      const values = Array.from(event.target.querySelectorAll("select"), (select) => select.value);
+      await startGame({ secret: values });
+      return;
+    }
     if (event.target.id !== "guess-form") return;
     event.preventDefault();
     const values = Array.from(event.target.querySelectorAll("select"), (select) => select.value || undefined);

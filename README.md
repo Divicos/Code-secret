@@ -20,6 +20,10 @@ console.log(state.lastResult); // { wellPlaced: 2, misplaced: 2 }
 
 `getConfig()` et `getState()` sont synchrones. `startGame()` et `submitGuess()` renvoient des promesses. Un refus rejette une erreur qui porte un `code` normalisé ; pour une proposition refusée, seul `lastError` change. L’état ne révèle pas le code secret. Les résultats et l’historique sont des copies indépendantes de l’état interne.
 
+## Parties manuelles de test
+
+Ouvrez `index.html?debug=1` pour afficher le banc d’essai. Il permet de fixer quatre couleurs, de jouer plusieurs fois le même scénario et d’afficher ou masquer le code de la partie. Cette zone n’apparaît pas en mode normal ni avec le seul paramètre `?test=1`. La valeur secrète reste absente de l’état retourné par l’API.
+
 ## Vérifications
 
 Ouvrez `tests.html` depuis le même dossier ou la même origine pour lancer les cas reproductibles T01–T09 du contrat, les priorités d’erreur et les scénarios de cycle de vie. La page présente chaque résultat. Le paramètre `?test=1` est ajouté uniquement à l’instance isolée utilisée par cette page. Avec Node.js, lancez aussi `node tests.cjs` pour vérifier la logique du moteur en ligne de commande, sans dépendance.

@@ -77,6 +77,24 @@ async function expectCode(action, code) {
   assert.deepEqual(restarted.history, []);
   assert.equal(restarted.lastError, null);
 
+  const appModule = require.resolve("./app.js");
+  const commonRoot = { innerHTML: "", addEventListener() {} };
+  global.document = { getElementById: (id) => id === "app" ? commonRoot : null };
+  global.window = { location: { search: "?test=1" } };
+  delete require.cache[appModule];
+  require(appModule);
+  assert.ok(window.codeSecretTest, "?test=1 expose l’API commune");
+  assert.doesNotMatch(commonRoot.innerHTML, /test-tools/, "?test=1 conserve l’interface commune");
+
+  const debugRoot = { innerHTML: "", addEventListener() {} };
+  global.document = { getElementById: (id) => id === "app" ? debugRoot : null };
+  global.window = { location: { search: "?debug=1" } };
+  delete require.cache[appModule];
+  require(appModule);
+  assert.equal(window.codeSecretTest, undefined, "?debug=1 seul n’expose pas l’API enseignant");
+  assert.match(debugRoot.innerHTML, /data-test-secret-form/, "?debug=1 affiche le banc d’essai manuel");
+  assert.doesNotMatch(debugRoot.innerHTML, /test-secret-reveal/, "le code reste masqué jusqu’au clic explicite");
+
   console.log("Tous les contrôles passent : configuration, notation T01–T09, refus, fin de partie et redémarrage.");
 })().catch((error) => {
   console.error(error);

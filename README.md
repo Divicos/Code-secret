@@ -44,3 +44,15 @@ La publication fonctionne comme site statique : aucun service hors ligne, instal
 ## Lancer et publier
 
 Ouvrir `index.html` pour jouer, `index.html?debug=1` pour les parties tests, ou `tests.html` pour la suite navigateur. Pour publier, activer GitHub Pages sur la branche `main` et le dossier racine du dépôt. Lancer les tests locaux avec `node tests.cjs`.
+
+## Appareils testés
+
+Le jeu est testé sur Windows.
+
+### Tests sur téléphones
+
+Le jeu a été testé sur Iphone X. Le jeu est fonctionnel
+
+## Certification d'un camarade
+
+Le jeu et l'API ont été testés par un camarade. Aucun bug n'a été constaté.

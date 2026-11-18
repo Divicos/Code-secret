@@ -1,37 +1,32 @@
 # Code secret — le jeu des couleurs
 
-**Version 1.0** · Application solo de déduction inspirée du Mastermind. Le jeu fonctionne dans un navigateur moderne sans compte, serveur applicatif, dépendance externe de code ou service d’IA. La police de caractères peut être chargée depuis Google Fonts ; les polices système prennent le relais hors ligne.
+**Version 1.0** · Jeu de déduction solo inspiré du Mastermind, jouable dans un navigateur moderne.
 
-## Jouer
+## Règles du jeu
 
-Ouvrez `index.html` dans un navigateur, ou publiez le contenu de ce dossier sur GitHub Pages. Choisissez quatre couleurs parmi rouge, bleu, vert, jaune, orange et violet. Les répétitions sont autorisées. Après chaque essai, les points foncés marquent les couleurs à la bonne position et les points cerclés indiquent les couleurs présentes ailleurs. Vous disposez de dix essais.
+Le code secret comporte quatre couleurs choisies parmi rouge, bleu, vert, jaune, orange et violet. Les répétitions sont autorisées. La personne qui joue dispose de dix essais. Après chaque proposition, les points foncés indiquent les couleurs à la bonne position ; les points cerclés indiquent les couleurs présentes ailleurs. Chaque occurrence n’est comptée qu’une fois. Quatre couleurs bien placées font gagner ; dix essais sans trouver le code font perdre.
 
-## API commune de test 0.2
+## Choix faits avec Codex
 
-L’API n’est exposée que lorsque l’URL contient `?test=1`. Elle est disponible sous `window.codeSecretTest` et utilise exactement le même moteur que l’interface.
+- JavaScript, HTML et CSS sans dépendance de code ni étape de compilation ; mise en page adaptée au téléphone et au clavier.
+- L’interface et l’API utilisent le même moteur. Le code secret reste privé et n’apparaît jamais dans l’état de l’API.
+- `?test=1` expose l’API commune 0.2. `?debug=1` affiche un banc d’essai distinct : choisir un code fixe, rejouer le scénario, puis révéler ou masquer le code.
+- Pas de compte, serveur, paiement, données personnelles ni service d’IA. Les polices Google Fonts sont facultatives ; des polices système sont utilisées si elles ne sont pas disponibles.
 
-```js
-const api = window.codeSecretTest;
-const config = api.getConfig();
-await api.startGame({ secret: ["rouge", "rouge", "bleu", "vert"] });
-const state = await api.submitGuess(["rouge", "bleu", "rouge", "vert"]);
-console.log(state.lastResult); // { wellPlaced: 2, misplaced: 2 }
-```
+## Vérifications API
 
-`getConfig()` et `getState()` sont synchrones. `startGame()` et `submitGuess()` renvoient des promesses. Un refus rejette une erreur qui porte un `code` normalisé ; pour une proposition refusée, seul `lastError` change. L’état ne révèle pas le code secret. Les résultats et l’historique sont des copies indépendantes de l’état interne.
+`window.codeSecretTest` fournit `getConfig()`, `startGame(options)`, `submitGuess(guess)` et `getState()`. La configuration annonce quatre positions, six couleurs, les doublons autorisés et dix essais. Les changements d’état sont asynchrones ; les lectures sont synchrones. Les refus de proposition suivent cet ordre : partie non démarrée, partie terminée, type, longueur, couleur. Ils ne consomment pas d’essai ; seul `lastError` change. Un code imposé à `startGame({ secret })` sert aux tests, sans être ajouté à l’état.
 
-## Parties manuelles de test
+## Tests attendus / obtenus
 
-Ouvrez `index.html?debug=1` pour afficher le banc d’essai. Il permet de fixer quatre couleurs, de jouer plusieurs fois le même scénario et d’afficher ou masquer le code de la partie. Cette zone n’apparaît pas en mode normal ni avec le seul paramètre `?test=1`. La valeur secrète reste absente de l’état retourné par l’API.
+Les cas T01–T09 du contrat attendent, dans l’ordre, **bien placées / mal placées** : `1/2`, `0/2`, `0/4`, `2/2`, `4/0`, `2/0`, `2/2`, `4/0`, `1/2`. Un essai exact doit gagner ; les autres cas restent en cours.
 
-## Vérifications
+**Obtenu :** `node tests.cjs` passe. Le script vérifie les neuf cas, les priorités d’erreur, l’absence de fuite du secret dans l’état, la victoire au dixième essai, la défaite, le redémarrage et la séparation des paramètres `?test=1` et `?debug=1`. `tests.html` fournit aussi une page de vérification dans un navigateur ; son rendu et ses interactions ne sont pas validés ici.
 
-Ouvrez `tests.html` depuis le même dossier ou la même origine pour lancer les cas reproductibles T01–T09 du contrat, les priorités d’erreur et les scénarios de cycle de vie. La page présente chaque résultat. Le paramètre `?test=1` est ajouté uniquement à l’instance isolée utilisée par cette page. Avec Node.js, lancez aussi `node tests.cjs` pour vérifier la logique du moteur en ligne de commande, sans dépendance.
+## Limites
 
-## Publication GitHub Pages
+La publication fonctionne comme site statique : aucun service hors ligne, installation PWA ou mise à jour automatique n’est inclus. Le test navigateur et le rendu mobile doivent être vérifiés sur le site publié. Les polices Google Fonts nécessitent une connexion, mais le jeu reste utilisable sans elles.
 
-Dans les paramètres du dépôt, activez **Pages** et choisissez la branche et le dossier contenant `index.html` (par exemple `/(root)`). Les liens et ressources du jeu utilisent des chemins relatifs pour fonctionner sous le chemin du dépôt. Aucune étape de compilation n’est nécessaire.
+## Lancer et publier
 
-## Vérification et limites
-
-Le code et les cas de vérification sont fournis ; lancez `tests.html` après modification et sur l’adresse publiée. Le comportement en ligne dépend de la configuration GitHub Pages. L’installation PWA, le jeu hors ligne et les mises à jour automatiques sont facultatifs et ne sont pas inclus dans cette version.
+Ouvrir `index.html` pour jouer, `index.html?debug=1` pour les parties tests, ou `tests.html` pour la suite navigateur. Pour publier, activer GitHub Pages sur la branche `main` et le dossier racine du dépôt. Lancer les tests locaux avec `node tests.cjs`.
